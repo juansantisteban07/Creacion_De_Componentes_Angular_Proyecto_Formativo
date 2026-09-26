@@ -1,0 +1,45 @@
+<div class="acceso-fondo">
+  <div class="tarjeta acceso-tarjeta">
+    <a routerLink="/" class="marca">Miradent</a>
+
+    @if (esPersonal) {
+      <h2>Acceso del personal</h2>
+      <p class="sub">Administradores y médicos de la clínica.</p>
+    } @else {
+      <!-- Pestañas para cambiar entre "Iniciar sesión" y "Registrarme" -->
+      <div class="pestanas">
+        <button [class.activa]="vista === 'ingreso'" (click)="cambiarVista('ingreso')">Iniciar sesión</button>
+        <button [class.activa]="vista === 'registro'" (click)="cambiarVista('registro')">Registrarme</button>
+      </div>
+    }
+
+    @if (vista === 'ingreso') {
+      <form (ngSubmit)="ingresar()">
+        <label>Correo</label>
+        <input type="email" [(ngModel)]="correo" name="correo" required />
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="contrasena" name="contrasena" required />
+
+        @if (error) { <p class="mensaje error">{{ error }}</p> }
+        @if (exito) { <p class="mensaje exito">{{ exito }}</p> }
+
+        <button class="btn" type="submit" style="margin-top: 14px; width: 100%">Entrar</button>
+      </form>
+    } @else {
+      <form (ngSubmit)="registrar()">
+        <label>Nombre completo</label>
+        <input [(ngModel)]="nombre" name="nombre" required />
+        <label>Documento</label>
+        <input [(ngModel)]="documento" name="documento" required />
+        <label>Correo</label>
+        <input type="email" [(ngModel)]="correo" name="correo" required />
+        <label>Contraseña (mínimo 6 caracteres)</label>
+        <input type="password" [(ngModel)]="contrasena" name="contrasena" required />
+
+        @if (error) { <p class="mensaje error">{{ error }}</p> }
+
+        <button class="btn" type="submit" style="margin-top: 14px; width: 100%">Crear cuenta</button>
+      </form>
+    }
+  </div>
+</div>

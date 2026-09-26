@@ -1,0 +1,42 @@
+<form (ngSubmit)="enviar()">
+  <!-- Este selector de paciente solo aparece cuando lo usa el administrador -->
+  @if (elegirPaciente) {
+    <label>Paciente</label>
+    <select [(ngModel)]="pacienteElegido" name="paciente">
+      <option [ngValue]="null" disabled>Selecciona un paciente</option>
+      @for (p of citas.pacientes(); track p.id) {
+        <option [ngValue]="p.id">{{ p.nombre }} ({{ p.documento }})</option>
+      }
+    </select>
+  }
+
+  <label>Médico</label>
+  <select [(ngModel)]="medicoId" (ngModelChange)="hora = ''" name="medico">
+    <option [ngValue]="null" disabled>Selecciona un médico</option>
+    @for (m of citas.medicos(); track m.id) {
+      <option [ngValue]="m.id">{{ m.nombre }} · {{ m.especialidad }}</option>
+    }
+  </select>
+
+  <label>Fecha</label>
+  <input type="date" [min]="hoy" [(ngModel)]="fecha" (ngModelChange)="hora = ''" name="fecha" />
+
+  <label>Hora disponible</label>
+  <select [(ngModel)]="hora" name="hora" [disabled]="horas.length === 0">
+    <option value="" disabled>
+      {{ medicoId && fecha ? (horas.length ? 'Selecciona una hora' : 'Sin horarios libres') : 'Elige médico y fecha' }}
+    </option>
+    @for (h of horas; track h) {
+      <option [value]="h">{{ h }}</option>
+    }
+  </select>
+
+  <label>Motivo de la consulta</label>
+  <textarea [(ngModel)]="motivo" name="motivo" rows="2" placeholder="Ej: dolor de muela, limpieza..."></textarea>
+
+  @if (mensaje) {
+    <p class="mensaje" [class.error]="esError" [class.exito]="!esError">{{ mensaje }}</p>
+  }
+
+  <button class="btn" type="submit" style="margin-top: 14px">Agendar cita</button>
+</form>

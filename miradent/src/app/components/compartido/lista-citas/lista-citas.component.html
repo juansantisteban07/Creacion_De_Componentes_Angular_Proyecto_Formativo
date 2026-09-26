@@ -1,0 +1,42 @@
+@if (lista.length === 0) {
+  <p class="vacio">No hay citas para mostrar.</p>
+} @else {
+  <div class="tabla-contenedor">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Hora</th>
+          @if (mostrarPaciente) { <th>Paciente</th> }
+          @if (mostrarMedico) { <th>Médico</th> }
+          <th>Motivo</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cita of lista; track cita.id) {
+          <tr>
+            <td>{{ cita.fecha }}</td>
+            <td>{{ cita.hora }}</td>
+            @if (mostrarPaciente) { <td>{{ citas.nombreDe(cita.pacienteId) }}</td> }
+            @if (mostrarMedico) { <td>{{ citas.nombreDe(cita.medicoId) }}</td> }
+            <td>{{ cita.motivo }}</td>
+            <td><span class="etiqueta {{ cita.estado }}">{{ cita.estado }}</span></td>
+            <td class="acciones">
+              <!-- Los botones de acción solo aparecen si la cita sigue programada -->
+              @if (cita.estado === 'programada') {
+                @if (puedeAtender) {
+                  <button class="btn btn-ok btn-pequeno" (click)="atender.emit(cita)">Atendida</button>
+                }
+                @if (puedeCancelar) {
+                  <button class="btn btn-peligro btn-pequeno" (click)="pedirCancelar(cita)">Cancelar</button>
+                }
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

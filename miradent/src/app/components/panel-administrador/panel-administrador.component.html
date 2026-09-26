@@ -1,0 +1,82 @@
+<app-barra-navegacion />
+
+<main class="contenedor">
+  <h1>Panel de administración</h1>
+
+  <!-- Pestañas para moverse entre las 3 secciones -->
+  <div class="pestanas">
+    <button [class.activa]="pestana === 'calendario'" (click)="pestana = 'calendario'">📅 Calendario</button>
+    <button [class.activa]="pestana === 'citas'" (click)="pestana = 'citas'">🗂️ Citas</button>
+    <button [class.activa]="pestana === 'historia'" (click)="pestana = 'historia'">📋 Historia clínica</button>
+  </div>
+
+  @switch (pestana) {
+    @case ('calendario') {
+      <div class="tarjeta">
+        <app-calendario [citas]="todas" (diaSeleccionado)="diaSeleccionado = $event" />
+      </div>
+      <div class="tarjeta">
+        <h2>Citas del {{ diaSeleccionado }}</h2>
+        <app-lista-citas
+          [lista]="citasDelDia"
+          [mostrarPaciente]="true"
+          [mostrarMedico]="true"
+          [puedeCancelar]="true"
+          (cancelar)="cancelar($event)"
+        />
+      </div>
+    }
+
+    @case ('citas') {
+      <div class="tarjeta">
+        <h2>Agendar cita para un paciente</h2>
+        <!-- Aquí sí se le permite al admin elegir a cuál paciente le agenda -->
+        <app-formulario-cita [elegirPaciente]="true" />
+      </div>
+      <div class="tarjeta">
+        <h2>Todas las citas</h2>
+        <div class="filtros">
+          @for (f of filtros; track f) {
+            <button class="btn btn-pequeno" [class.btn-secundario]="filtro !== f" (click)="filtro = f">{{ f }}</button>
+          }
+        </div>
+        <app-lista-citas
+          [lista]="citasFiltradas"
+          [mostrarPaciente]="true"
+          [mostrarMedico]="true"
+          [puedeCancelar]="true"
+          (cancelar)="cancelar($event)"
+        />
+      </div>
+    }
+
+    @case ('historia') {
+      <div class="tarjeta">
+        <h2>Historia clínica</h2>
+        <label>Paciente</label>
+        <select [(ngModel)]="pacienteHistoriaId" name="pacienteHistoria">
+          <option [ngValue]="null" disabled>Selecciona un paciente</option>
+          @for (p of citas.pacientes(); track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }} ({{ p.documento }})</option>
+          }
+        </select>
+
+        @if (pacienteHistoriaId) {
+          <label>Nueva anotación</label>
+          <textarea [(ngModel)]="nuevaNota" name="nota" rows="3" placeholder="Diagnóstico, tratamiento, observaciones..."></textarea>
+          <button class="btn" style="margin-top: 10px" (click)="guardarNota()">Guardar en la historia</button>
+
+          <h3>Registros</h3>
+          @for (r of historia; track r.id) {
+            <div class="registro">
+              <small>{{ r.fecha }} · {{ citas.nombreDe(r.autorId) }}</small>
+              <p>{{ r.descripcion }}</p>
+            </div>
+          } @empty {
+            <p class="vacio">Este paciente aún no tiene registros.</p>
+          }
+        }
+      </div>
+    }
+  }
+</main>

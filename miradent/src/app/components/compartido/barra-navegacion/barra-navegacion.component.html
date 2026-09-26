@@ -1,0 +1,19 @@
+<header class="barra">
+  <div class="barra-contenido">
+    <a routerLink="/" class="marca">Miradent</a>
+
+    <!-- Si hay un usuario con sesión iniciada, mostramos su nombre y el botón de salir -->
+    @if (auth.usuarioActual(); as usuario) {
+      <div class="barra-usuario">
+        <span>{{ usuario.nombre }} · <em>{{ usuario.rol }}</em></span>
+        <button class="btn btn-secundario btn-pequeno" (click)="auth.cerrarSesion()">Salir</button>
+      </div>
+    } @else {
+      <!-- Si nadie ha iniciado sesión, mostramos el enlace para entrar -->
+      <nav>
+        <a routerLink="/">Inicio</a>
+        <a routerLink="/acceso" class="btn btn-pequeno">Iniciar sesión / Registrarse</a>
+      </nav>
+    }
+  </div>
+</header>

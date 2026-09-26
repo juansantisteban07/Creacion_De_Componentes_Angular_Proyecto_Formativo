@@ -1,0 +1,26 @@
+<app-barra-navegacion />
+
+<main class="contenedor">
+  <h1>{{ usuario.nombre }}</h1>
+  <p class="sub">{{ usuario.especialidad }}</p>
+
+  <!-- Resumen rápido del día -->
+  <div class="rejilla">
+    <div class="tarjeta estadistica"><span>{{ pendientesHoy }}</span>Pendientes hoy</div>
+    <div class="tarjeta estadistica"><span>{{ proximas.length }}</span>Próximas citas</div>
+  </div>
+
+  <!-- Citas de hoy, con botón para marcarlas como atendidas -->
+  <div class="tarjeta">
+    <h2>Citas de hoy</h2>
+    <app-lista-citas [lista]="citasHoy" [mostrarPaciente]="true" [puedeAtender]="true" (atender)="atender($event)" />
+  </div>
+
+  <!-- Calendario para revisar cualquier otro día -->
+  <div class="tarjeta">
+    <h2>Mi calendario</h2>
+    <app-calendario [citas]="misCitas" (diaSeleccionado)="diaSeleccionado = $event" />
+    <h3>Citas del {{ diaSeleccionado }}</h3>
+    <app-lista-citas [lista]="citasDelDia" [mostrarPaciente]="true" [puedeAtender]="true" (atender)="atender($event)" />
+  </div>
+</main>

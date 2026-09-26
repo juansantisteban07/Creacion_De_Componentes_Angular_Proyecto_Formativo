@@ -1,0 +1,36 @@
+<app-barra-navegacion />
+
+<main class="contenedor">
+  <h1>Hola, {{ usuario.nombre }} 👋</h1>
+
+  <!-- Tarjetas con el resumen de citas -->
+  <div class="rejilla">
+    <div class="tarjeta estadistica"><span>{{ contar('programada') }}</span>Programadas</div>
+    <div class="tarjeta estadistica"><span>{{ contar('atendida') }}</span>Atendidas</div>
+    <div class="tarjeta estadistica"><span>{{ contar('cancelada') }}</span>Canceladas</div>
+  </div>
+
+  <!-- Formulario para agendar una cita nueva -->
+  <div class="tarjeta">
+    <h2>Agendar una cita</h2>
+    <app-formulario-cita [pacienteId]="usuario.id" />
+  </div>
+
+  <!-- Lista de mis citas, con filtros -->
+  <div class="tarjeta">
+    <h2>Mis citas</h2>
+    <div class="filtros">
+      @for (f of filtros; track f.valor) {
+        <button class="btn btn-pequeno" [class.btn-secundario]="filtro !== f.valor" (click)="filtro = f.valor">
+          {{ f.texto }}
+        </button>
+      }
+    </div>
+    <app-lista-citas
+      [lista]="citasFiltradas"
+      [mostrarMedico]="true"
+      [puedeCancelar]="true"
+      (cancelar)="cancelar($event)"
+    />
+  </div>
+</main>

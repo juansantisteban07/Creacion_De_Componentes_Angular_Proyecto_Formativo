@@ -1,0 +1,34 @@
+<div class="calendario">
+  <div class="calendario-cabecera">
+    <button class="btn btn-secundario btn-pequeno" (click)="cambiarMes(-1)"></button>
+    <strong>{{ titulo | titlecase }}</strong>
+    <button class="btn btn-secundario btn-pequeno" (click)="cambiarMes(1)"></button>
+  </div>
+
+  <div class="calendario-rejilla">
+    <!-- Nombres de los días de la semana -->
+    @for (nombre of nombresDias; track nombre) {
+      <div class="dia-nombre">{{ nombre }}</div>
+    }
+
+    <!-- Cada casilla del mes -->
+    @for (celda of celdas; track $index) {
+      @if (celda) {
+        <button
+          class="dia"
+          [class.hoy]="celda.fecha === hoy"
+          [class.activo]="celda.fecha === seleccionado"
+          (click)="elegir(celda.fecha)"
+        >
+          {{ celda.dia }}
+          <!-- Si ese día tiene citas, mostramos un puntito rojo con el número -->
+          @if (celda.cantidad > 0) {
+            <span class="punto">{{ celda.cantidad }}</span>
+          }
+        </button>
+      } @else {
+        <div></div> <!-- Casilla vacía, antes del día 1 del mes -->
+      }
+    }
+  </div>
+</div>
